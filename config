@@ -120,6 +120,10 @@ bindsym $mod+$alt+h bar mode hide
 # focus the child container
 #bindsym $mod+d focus child
 
+# cycle through workspaces
+bindsym $mod+Tab workspace next_on_output
+bindsym $mod+Shift+Tab workspace prev_on_output
+
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "1"
