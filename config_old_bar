@@ -9,15 +9,7 @@
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
-# Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod1
-set $alt Mod4
-
-# Home row direction keys, like vim
-set $left h
-set $down j
-set $up k
-set $right l
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -36,24 +28,14 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
-#exec --no-startup-id nm-applet
-#exec --no-startup-id dropbox-cli start
-#exec --no-startup-id python3 ~/dropbox.py start
-exec --no-startup-id keepassxc
+exec --no-startup-id nm-applet
+
 # Use pactl to adjust volume in PulseAudio.
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
-
-# Use brightnessctl to adjust screen brightness
-bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-bindsym XF86MonBrightnessUp exec brightnessctl set +5%
-
-# Use playerctl to stop/play multimedia
-bindsym XF86AudioPlay exec playerctl play-pause
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -66,28 +48,17 @@ bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 # bindsym $mod+d exec dmenu_run
-#bindsym $mod+d exec --no-startup-id rofi -show run
-bindsym $mod+d exec --no-startup-id rofi -show drun
-
+bindsym $mod+d exec --no-startup-id rofi -show run
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
-# screenshots
-bindsym Print exec ~/.config/i3/screenshot.sh full
-bindsym Shift+Print exec ~/.config/i3/screenshot.sh rect
-bindsym $alt+Print exec ~/.config/i3/screenshot.sh active_window
-
-# border and decoration toggle
-default_border pixel
-bindsym $mod+c border toggle
-
 # change focus
-bindsym $mod+$left focus left
-bindsym $mod+$down focus down
-bindsym $mod+$up focus up
-bindsym $mod+$right focus right
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -96,10 +67,10 @@ bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+$left move left
-bindsym $mod+Shift+$down move down
-bindsym $mod+Shift+$up move up
-bindsym $mod+Shift+$right move right
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -108,7 +79,7 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+b split h
+bindsym $mod+h split h
 
 # split in vertical orientation
 bindsym $mod+v split v
@@ -130,16 +101,8 @@ bindsym $mod+space focus mode_toggle
 # focus the parent container
 bindsym $mod+a focus parent
 
-# show/hide status bar
-bindsym $mod+$alt+s bar mode dock
-bindsym $mod+$alt+h bar mode hide
-
 # focus the child container
 #bindsym $mod+d focus child
-
-# cycle through workspaces
-bindsym $mod+Tab workspace next_on_output
-bindsym $mod+Shift+Tab workspace prev_on_output
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -216,8 +179,7 @@ bindsym $mod+r mode "resize"
 set $bgcolor    #00897b80
 set $ibgcolor   #363636
 set $fws        #00897b80
-#set $barcolor   #00897b33
-set $barcolor   #00897b
+set $barcolor   #00897b33
 set $textcolor  #ffffff
 set $ubgcolor   #ff0000
 set $itextcolor #969696
@@ -231,59 +193,22 @@ client.urgent           $ubgcolor       $ubgcolor               $textcolor      
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-	position top
-        #status_command i3status -c ~/.config/i3status/i3status.conf
-        status_command i3blocks -c ~/.config/i3blocks/i3blocks.conf
-        #status_command i3blocks
-	i3bar_command i3bar --transparency
-        tray_output primary
-        #tray_output HDMI-2
-
-        colors {
-		statusline #ffffff
-      		background #2f343f
-      		inactive_workspace #32323200 #32323200 #5c5c5c
-
-
-#                background $barcolor
-#                separator #282828
-                #                       border          background              text
-#                focused_workspace       $fws            $fws                    $textcolor
-#                inactive_workspace      $ibgcolor       $ibgcolor               $itextcolor
-#                urgent_workspace        $ubgcolor       $ubgcolor               $textcolor
-                }
+    status_command i3status
 }
 
 # Display Wallpaper
-#exec_always feh --bg-fi ~/Pictures/Wallpapers/ubuntu.jpg
-exec_always feh --bg-fi /usr/share/backgrounds/warty-final-ubuntu.png
+exec_always feh --bg-fi /home/valerio/Pictures/Wallpapers/ubuntu.jpg
 
 # Keybing for i3lock
-#bindsym $mod+x exec /home/valerio/.config/i3blocks/scripts/lock
-#bindsym $mod+z exec i3lock -c 000000
-#bindsym $mod+z exec ~/.config/i3blocks/scripts/lock
-#bindsym $mod+z exec i3lock -c 000000
-bindsym $mod+z exec i3lock-fancy
+bindsym $mod+x exec /home/valerio/.config/i3blocks/scripts/lock
+
 # Start Application Shortcuts
-bindsym $mod+F1 exec brave
+bindsym $mod+F1 exec brave-browser
 bindsym $mod+F2 exec firefox
 
 # Assign Programs to Workspaces
-#for_window [class="Brave-browser"] move to workspace $ws2
-#for_window [class="firefox"] move to workspace $ws3
+for_window [class="Brave-browser"] move to workspace $ws2
+for_window [class="Firefox"] move to workspace $ws3
 
 # Start Polkit
-#exec /usr/bin/polkit-dumb-agent
-
-#exec /usr/bin/xrandr --output HDMI-2 --primary
-exec /usr/bin/xrandr --output DP-1 --primary
-# Restart Tray applications
-exec_always --no-startup-id "~/.config/i3/tray.sh"
-
-#exec --no-startup-id ~/Applications/Nextcloud-3.4.0-x86_64.AppImage
-# CONNECT TO VPN
-exec /usr/bin/protonvpn-cli ks --off
-exec /usr/bin/protonvpn-cli c CH-DE#1
-
-#exec --no-startup-id /usr/bin/megasync &
-exec_always --no-startup-id "~/.config/i3/cloud.sh"
+exec /usr/bin/polkit-dumb-agent
